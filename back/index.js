@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 //rutas
+app.use('/api/catalogo', require('./routes/catalogo.route.js'));
 app.use('/api/tienda', require('./routes/tienda.route.js'));
 app.use('/api/producto', require('./routes/producto.route.js'));
 
