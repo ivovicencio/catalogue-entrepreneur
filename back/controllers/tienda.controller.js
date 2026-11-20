@@ -1,54 +1,49 @@
-const TiendaModel = require('../models/tienda.model');
+const TiendaService = require('../services/tienda.service');
 const tiendaCtrl = {};
 
-tiendaCtrl.getTiendas = async(req, res) => {
-    const tiendas = await TiendaModel.findAll();
+tiendaCtrl.getTiendas = async (req, res) => {
+  try {
+    const tiendas = await TiendaService.listarTiendas();
     res.json(tiendas);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ status: '0', msg: error.message });
+  }
 };
 
 tiendaCtrl.createTienda = async (req, res) => {
-    try {
-        const tienda = await TiendaModel.create(req.body);
-        res.json({
-            status: '1',
-            msg: 'Tienda guardada.', tienda
-        });
-    } catch(error) {
-        res.status(400).json({
-            status: '0',
-            msg: 'Error procesando operacion'
-        });
-    }
+  try {
+    const tienda = await TiendaService.crearTienda(req.body);
+    res.status(201).json({ status: '1', msg: 'Tienda guardada.', tienda });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
+  }
 };
 
 tiendaCtrl.getTiendaBySlug = async (req, res) => {
-    const tienda = await TiendaModel.findBySlug(req.params.slug);
-    if(!tienda) return res.status(404).json({
-        status: '0',
-        msg: 'Tienda no encontrada.'
-    });
+  try {
+    const tienda = await TiendaService.obtenerPorSlug(req.params.slug);
     res.json(tienda);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ status: '0', msg: error.message });
+  }
 };
 
-tiendaCtrl.editTienda = async (req,res) => {
-    const updated = await TiendaModel.update(req.params.id, req.body);
-    if(!updated) return res.status(404).json({
-        status: '0',
-        msg: 'Tienda no encontrada'
-    });
-    res.json({
-        status: '1',
-        msg: 'Tienda actualizada',
-        tienda: updated
-    });
+tiendaCtrl.editTienda = async (req, res) => {
+  try {
+    const updated = await TiendaService.actualizarTienda(req.params.id, req.body);
+    res.json({ status: '1', msg: 'Tienda updated', tienda: updated });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
+  }
 };
 
 tiendaCtrl.deleteTienda = async (req, res) => {
-        await TiendaModel.delete(req.params.id);
-        res.json({
-            status: '1',
-            msg: 'Tienda eliminada'
-        });
+  try {
+    await TiendaService.eliminarTienda(req.params.id);
+    res.json({ status: '1', msg: 'Tienda removed' });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
+  }
 };
 
 module.exports = tiendaCtrl;

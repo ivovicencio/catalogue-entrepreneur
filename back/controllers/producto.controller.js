@@ -1,60 +1,58 @@
-const ProductoModel = require('../models/producto.model');
+const ProductoService = require('../services/producto.service');
 const productoCtrl = {};
 
 productoCtrl.getProductos = async (req, res) => {
-  const productos = await ProductoModel.findAll();
-  res.json(productos);
+  try {
+    const productos = await ProductoService.listarProductos();
+    res.json(productos);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ status: '0', msg: error.message });
+  }
 };
 
 productoCtrl.getProductosByTienda = async (req, res) => {
-  const productos = await ProductoModel.findByTienda(req.params.tiendaId);
-  res.json(productos);
+  try {
+    const productos = await ProductoService.listarPorTienda(req.params.tiendaId);
+    res.json(productos);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ status: '0', msg: error.message });
+  }
 };
 
 productoCtrl.createProducto = async (req, res) => {
   try {
-    const producto = await ProductoModel.create(req.body);
-    res.json({
-        status: '1',
-        msg: 'Producto guardado.', 
-        producto 
-    });
+    const producto = await ProductoService.crearProducto(req.body);
+    res.status(201).json({ status: '1', msg: 'Producto guardado.', producto });
   } catch (error) {
-    res.status(400).json({ 
-        status: '0', 
-        msg: 'Error procesando operacion.' 
-    });
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
   }
 };
 
 productoCtrl.getProducto = async (req, res) => {
-  const producto = await ProductoModel.findById(req.params.id);
-  if (!producto) return res.status(404).json({ 
-    status: '0', 
-    msg: 'Producto no encontrado.' 
-});
-  res.json(producto);
+  try {
+    const producto = await ProductoService.obtenerPorId(req.params.id);
+    res.json(producto);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ status: '0', msg: error.message });
+  }
 };
 
 productoCtrl.editProducto = async (req, res) => {
-  const updated = await ProductoModel.update(req.params.id, req.body);
-  if (!updated) return res.status(404).json({ 
-    status: '0', 
-    msg: 'Producto no encontrado.' 
-});
-  res.json({ 
-    status: '1', 
-    msg: 'Producto actualizado', 
-    producto: updated 
-});
+  try {
+    const updated = await ProductoService.actualizarProducto(req.params.id, req.body);
+    res.json({ status: '1', msg: 'Producto updated', producto: updated });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
+  }
 };
 
 productoCtrl.deleteProducto = async (req, res) => {
-  await ProductoModel.delete(req.params.id);
-  res.json({ 
-    status: '1', 
-    msg: 'Producto eliminado' 
-});
+  try {
+    await ProductoService.eliminarProducto(req.params.id);
+    res.json({ status: '1', msg: 'Producto removed' });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ status: '0', msg: error.message });
+  }
 };
 
 module.exports = productoCtrl;

@@ -16,6 +16,9 @@ const TiendaModel = {};
 
 TiendaModel.findAll = async () => tiendas;
 
+TiendaModel.findById = async (id) => 
+    tiendas.find(t => t.id === id);
+
 TiendaModel.findBySlug = async(slug) =>
     tiendas.find(t => t.slug === slug.toLowerCase());
 
