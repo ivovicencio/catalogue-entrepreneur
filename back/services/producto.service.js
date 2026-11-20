@@ -29,21 +29,23 @@ ProductoService.obtenerPorId = async (id) => {
   return producto;
 };
 
-ProductoService.crearProducto = async (data) => {
-  if (!data.tienda_id || !data.nombre || data.precio === undefined) {
-    throw crearErrorNegocio('Los campos tienda_id, nombre y precio son obligatorios.', 400);
+ProductoService.crearProducto = async (data, tiendaAutenticada) => {
+  if (!data.nombre || data.precio === undefined) {
+    throw crearErrorNegocio('Los campos nombre y precio son obligatorios.', 400);
   }
 
   if (Number(data.precio) < 0) {
     throw crearErrorNegocio('El precio del producto no puede ser negativo.', 400);
   }
 
-  const tienda = await TiendaModel.findById(data.tienda_id);
-  if (!tienda) {
-    throw crearErrorNegocio('No se puede crear el producto: la tienda_id no existe.', 404);
+  if (!tiendaAutenticada || !tiendaAutenticada.activa) {
+    throw crearErrorNegocio('Tienda no autorizada o inactiva para crear productos.', 403);
   }
 
-  return await ProductoModel.create(data);
+  return await ProductoModel.create({
+    ...data,
+    tienda_id: tiendaAutenticada.id
+  });
 };
 
 ProductoService.actualizarProducto = async (id, data) => {

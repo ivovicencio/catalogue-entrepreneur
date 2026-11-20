@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', verificarAdmin, tiendaCtrl.getTiendas);
 router.post('/', verificarAdmin, tiendaCtrl.createTienda);
-router.get('/:slug', verificarAdmin, tiendaCtrl.getTiendaBySlug);
+router.get('/:slug', tiendaCtrl.getTiendaBySlug);
 router.put('/:id', verificarAdmin, tiendaCtrl.editTienda);
 router.delete('/:id', verificarAdmin, tiendaCtrl.deleteTienda);
 
