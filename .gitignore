@@ -1,2 +1,5 @@
 #archivo env
 /back/.env
+
+#node modules
+node_modules/
