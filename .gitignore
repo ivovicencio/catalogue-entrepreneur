@@ -1,2 +1,51 @@
-#archivo env
+# Dependencias y build de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+#Variables de entorno y secretos
 /back/.env
+.env.*
+!.env.example
+
+# Imágenes generadas / subidas en tiempo de ejecución (Etapa 4)
+uploads/
+!uploads/.gitkeep
+
+# Datos locales de base de datos / volúmenes de Docker (Etapa 5+)
+pgdata/
+postgres-data/
+data/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs y archivos temporales
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.user
+*.code-workspace
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
